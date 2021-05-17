@@ -25,7 +25,7 @@ numero_articoli_passate <- dbGetQuery(con, "SELECT numero_articoli
 grafico_articoli <- boxplot(numero_articoli_passate$numero_articoli, horizontal = T, col = "yellow")
 ```
 
-![Boxplot](Risorse/articoli.png)
+![Boxplot](Risorse/boxplot.png)
 
 ### Histogram
 
@@ -45,7 +45,7 @@ a <- as.numeric(a)
 hist(a, breaks = 20, col = rgb(0.2,0.8,0.5,0.5), border = F, freq = T, las=1, main= "Birth Dates", xlab = "")
 ```
 
-![Histogram](Risorse/Birth_dates.png)
+![Histogram](Risorse/hist.png)
 
 ### Barplot
 
@@ -63,7 +63,7 @@ par(mar=c(2,8,0,1))
 barplot(table(job_in_wg$professione),horiz = T, las=1, cex.names = 0.6, col = "#87CEFA")
 ```
 
-![Barplot](Risorse/Jobs_in_wg.png)
+![Barplot](Risorse/barplot.png)
 
 ### Heatmap
 
@@ -97,5 +97,5 @@ heatmap(m, Rowv = NA, Colv = NA, col= rev(heat.colors(3)), cexCol = 0.8, cexRow 
 legend(x=0.001, y=1, legend = c(0, 1, 2), fill = colorRampPalette(rev(heat.colors(3)))(3))
 ```
 
-![Heatmap](Risorse/Job_spec.png)
+![Heatmap](Risorse/heatmap.png)
 
