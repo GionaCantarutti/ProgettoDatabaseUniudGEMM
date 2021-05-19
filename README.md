@@ -112,6 +112,142 @@ Seguono le operazioni che interagiscono con il numero di membri in un comitato c
 
 Come si evince dall’analisi, mantenere la ridondanza riduce gli accessi giornalieri di oltre 10 volte.
 
+## Schema E-R ristrutturato
+
+## Schema relazionale
+
+# Progettazione fisica
+
+Abbiamo usato Postresql per progettare fisicamente il database, riportiamo alcuni frammenti di codice rilevanti
+
+Visto che le conferenze di distinguono in tre stati abbiamo deciso di creare un tipo di dati dedicato
+
+```sql
+CREATE TYPE STATO_CONFERENZA AS ENUM
+(
+'INDETTA', 'FISSATA', 'PASSATA'
+);
+```
+
+La tabella centrale e più importante del database è "conferenza", qui sotto riportiamo il codice per crearla
+
+```sql
+CREATE TABLE conferenze.conferenza
+(
+  data date NOT NULL,
+  argomento character varying(50) NOT NULL,
+  stato stato_conferenza NOT NULL,
+  min_iscritti smallint NOT NULL,
+  max_iscritti smallint NOT NULL,
+  conclusioni character varying(100),
+  termine_conferenza date,
+  luogo character varying(100),
+  numero_articoli smallint DEFAULT 0,
+  general_chairman character(16),
+  numero_membri_org smallint DEFAULT 0,
+  chairman_org character(16),
+  numero_membri_prog smallint DEFAULT 0,
+  chairman_prog character(16),
+  numero_membri_rev smallint DEFAULT 0,
+  chairman_rev character(16),
+  CONSTRAINT conferenza_pkey PRIMARY KEY (data, argomento),
+  CONSTRAINT conferenza_chairman_org_fkey FOREIGN KEY (chairman_org, data, argomento)
+  	REFERENCES conferenze.membro_org (cf, data_conferenza, argomento_conferenza) MATCH FULL
+  	ON UPDATE CASCADE ON DELETE SET NULL
+            DEFERRABLE INITIALLY DEFERRED,
+  CONSTRAINT conferenza_chairman_prog_fkey FOREIGN KEY (chairman_prog, data, argomento)
+  	REFERENCES conferenze.membro_prog (cf, data_conferenza, argomento_conferenza) MATCH FULL
+  	ON UPDATE CASCADE ON DELETE SET NULL
+            DEFERRABLE INITIALLY DEFERRED,
+  CONSTRAINT conferenza_chairman_rev_fkey FOREIGN KEY (chairman_rev, data, argomento)
+  	REFERENCES conferenze.membro_rev (cf, data_conferenza, argomento_conferenza) MATCH FULL
+  	ON UPDATE CASCADE ON DELETE SET NULL
+            DEFERRABLE INITIALLY DEFERRED,
+  CONSTRAINT conferenza_general_chairman_fkey FOREIGN KEY (general_chairman)
+  	REFERENCES conferenze.persona (cf) MATCH SIMPLE
+  	ON UPDATE CASCADE ON DELETE SET NULL
+            DEFERRABLE INITIALLY DEFERRED
+);
+```
+
+La tabella necessita di diversi constraint aggiuntivi, mostriamo quelli che abbiamo messo per controllare la correttezza della conferenza in base al suo stato
+
+```sql
+ALTER TABLE conferenze.conferenza
+ADD CONSTRAINT controlla_indetta
+CHECK (
+  	termine_conferenza is not NULL
+	OR stato != 'INDETTA'
+);
+
+ALTER TABLE conferenze.conferenza
+ADD CONSTRAINT controlla_fissata
+CHECK (
+	(
+    	data is not null
+    	AND luogo is not null
+    	AND ( min_iscritti <= conteggio_inviti(data, argomento))
+    	AND (conteggio_inviti(data, argomento) <= max_iscritti )
+    	AND (numero_articoli > 0)
+	) OR stato != 'FISSATA'
+);
+
+ALTER TABLE conferenze.conferenza
+ADD CONSTRAINT controlla_passata
+CHECK (
+	(
+		conteggio_presenze(data, argomento) > 0
+		AND conclusioni is not null
+		AND luogo is not null
+		AND data is not null
+		AND numero_articoli > 0
+	) OR stato != ’PASSATA’
+);
+```
+
+Come si evince dal codice sopra riportato, il constraint "controlla_fissata" necessita della funzione "conteggio_inviti" che riportiamo qui sotto.   
+Riportiamo inoltre i trigger utilizzati per mantenere l'attributo ridondante "numero_articoli", anche esso utilizzato nello stesso constraint
+
+```sql
+CREATE OR REPLACE FUNCTION conteggio_inviti( data date, arg character varying(50) )
+RETURNS smallint
+LANGUAGE plpgsql AS
+$$
+	declare
+		n smallint;
+	begin
+		select count(*) into n from conferenze.invito i
+		where i.data_conferenza = data AND i.argomento_conferenza = arg;
+		return n;
+	end;
+$$;
+```
+
+```sql
+CREATE CONSTRAINT TRIGGER aggiunta_articolo
+after insert
+ON conferenze.approvazione_articolo
+DEFERRABLE
+FOR EACH row
+EXECUTE PROCEDURE aggiunto_articolo();
+
+CREATE OR REPLACE FUNCTION aggiunto_articolo()
+RETURNS trigger
+LANGUAGE plpgsql AS
+$$
+	begin
+		UPDATE conferenze.conferenza
+		SET  numero_articoli =  numero_articoli + 1
+		WHERE conferenza.data = new.data_conferenza 
+    AND conferenza.argomento = new.argomento_conferenza;
+    
+    return new;
+	end;
+$$; 
+```
+
+# Implementazione
+
 # Analisi database
 
 Per l'analisi dati abbiamo scelto di utilizzare 4 grafici diversi: boxplot, histogram, barplot e heatmap
