@@ -248,6 +248,14 @@ $$;
 
 # Implementazione
 
+Tramite R abbiamo generato dati casuali e semi-plausibili per popolare il database.
+
+Una delle prime e più semplici tabelle che abbiamo riempito è stata "persona". Nome e cognome sono estratti casualmente dal [file provveduto dal prof. Della Monica](https://users.dimi.uniud.it/~dario.dellamonica/teaching/19_20_1sem_BDlab/19_20_1sem_BDlab.php) e nella stessa maniera abbiamo estratto casualmente le specializzazioni [da questo documento, a partire da pagina 17](https://networking.ifip.org/images/IFIP_Networking_2020-Booklet.pdf) e le professioni [da questa pagina web](https://www.thebalancecareers.com/list-of-information-technology-it-job-titles-2061498). Per la data di nascita abbiamo usato un numero casuale 
+
+```r
+
+```
+
 # Analisi database
 
 Per l'analisi dati abbiamo scelto di utilizzare 4 grafici diversi: boxplot, histogram, barplot e heatmap
