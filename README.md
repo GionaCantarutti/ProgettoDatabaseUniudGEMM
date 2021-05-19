@@ -136,7 +136,7 @@ numero_articoli_passate <- dbGetQuery(con, "SELECT numero_articoli
 ```
 
 ```{r}
-grafico_articoli <- boxplot(numero_articoli_passate$numero_articoli, horizontal = T, col = "yellow")
+grafico_articoli <- boxplot(numero_articoli_passate$numero_articoli, horizontal = T, xlab = "Frequency", col = "yellow")
 ```
 
 ![Boxplot](Risorse/boxplot.png)
@@ -156,7 +156,7 @@ Una volta eseguito il query scartiamo giorno e mese dalle date per una visualizz
 ```{r}
 a <- format(as.Date(network_administrator$data_nascita,format="%d/%m/%Y"), "%Y")
 a <- as.numeric(a)
-hist(a, breaks = 20, col = rgb(0.2,0.8,0.5,0.5), border = F, freq = T, las=1, main= "Birth Dates", xlab = "")
+hist(a, breaks = 20, col = rgb(0.2,0.8,0.5,0.5), border = F, freq = T, xlim = c(1970,1991), las=1, xlab = "Birth Dates", main = "")
 ```
 
 ![Histogram](Risorse/hist.png)
@@ -165,7 +165,7 @@ hist(a, breaks = 20, col = rgb(0.2,0.8,0.5,0.5), border = F, freq = T, las=1, ma
 
 Abbiamo invece utilizzato il barplot per mostrare la quantità di professionisti in ciascuna disciplina all'interno di uno specifico Working Group (in questo caso WG-1.1)
 
-```{r}
+```{r include=FALSE}
 job_in_wg <- dbGetQuery(con, "SELECT persona.professione 
                               FROM conferenze.persona LEFT JOIN conferenze.membro_wg 
                                                       ON persona.cf = membro_wg.cf 
@@ -173,7 +173,7 @@ job_in_wg <- dbGetQuery(con, "SELECT persona.professione
 ```
 
 ```{r}
-par(mar=c(2,8,0,1))
+par(mar=c(2,9,0,1))
 barplot(table(job_in_wg$professione),horiz = T, las=1, cex.names = 0.6, col = "#87CEFA")
 ```
 
@@ -183,7 +183,7 @@ barplot(table(job_in_wg$professione),horiz = T, las=1, cex.names = 0.6, col = "#
 
 L'heatmap rappresenta le distribuzioni di professioni e specializzazioni all'interno di uno specifico Working Group (in questo caso WG-2.5)
 
-```{r}
+```{r include=FALSE}
 prof_spec <- dbGetQuery(con, "SELECT persona.professione, persona.specializzazione 
                               FROM conferenze.persona LEFT JOIN conferenze.membro_wg 
                                                       ON persona.cf = membro_wg.cf 
@@ -207,8 +207,8 @@ for (i in 1:length(prof_spec$professione)) {
 Infine abbiamo utilizzato la matrice generata per realizzare la heatmap
 
 ```
-heatmap(m, Rowv = NA, Colv = NA, col= rev(heat.colors(3)), cexCol = 0.8, cexRow = 0.7, margins = c(10,1))
-legend(x=0.001, y=1, legend = c(0, 1, 2), fill = colorRampPalette(rev(heat.colors(3)))(3))
+heatmap(m, Rowv = NA, Colv = NA, col= rev(heat.colors(3)), cexCol = 0.8, cexRow = 0.7, margins = c(10,3))
+legend(x=0, y=1, legend = c(0, 1, 2), fill = colorRampPalette(rev(heat.colors(3)))(3))
 ```
 
 ![Heatmap](Risorse/heatmap.png)
