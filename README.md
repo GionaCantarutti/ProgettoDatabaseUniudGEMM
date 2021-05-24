@@ -70,7 +70,7 @@ Abbiamo svolto il progetto in varie fasi:
 
 Tenendo di conto i requisiti, dopo qualche iterazione siamo giunti al seguente diagramma E-R
 
-\*immagine\*
+![Tabella volumi](Risorse/Diagramma_E-R.png)
 
 # Progettazione logica
 
