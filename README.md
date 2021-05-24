@@ -248,12 +248,42 @@ $$;
 
 # Implementazione
 
-Tramite R abbiamo generato dati casuali e semi-plausibili per popolare il database.
+Tramite R abbiamo generato dati casuali e semi-plausibili per popolare il database, riportiamo alcuni esempi notabili. Il codice mostrato in questa sezione non è quello originariamente usato da noi (in quanto è andato perso), ma è una ricostruzione apposita per dimostrare i concetti esplicati nella relazione
 
-Una delle prime e più semplici tabelle che abbiamo riempito è stata "persona". Nome e cognome sono estratti casualmente dal [file provveduto dal prof. Della Monica](https://users.dimi.uniud.it/~dario.dellamonica/teaching/19_20_1sem_BDlab/19_20_1sem_BDlab.php) e nella stessa maniera abbiamo estratto casualmente le specializzazioni [da questo documento, a partire da pagina 17](https://networking.ifip.org/images/IFIP_Networking_2020-Booklet.pdf) e le professioni [da questa pagina web](https://www.thebalancecareers.com/list-of-information-technology-it-job-titles-2061498). Per la data di nascita abbiamo usato un numero casuale 
+### Tabella persona
+
+Una delle prime e più semplici tabelle che abbiamo riempito è stata "persona". Nome e cognome sono estratti casualmente dal [file provveduto dal prof. Della Monica](https://users.dimi.uniud.it/~dario.dellamonica/teaching/19_20_1sem_BDlab/19_20_1sem_BDlab.php) e nella stessa maniera abbiamo estratto casualmente le specializzazioni [da questo documento, a partire da pagina 17](https://networking.ifip.org/images/IFIP_Networking_2020-Booklet.pdf) e le professioni [da questa pagina web](https://www.thebalancecareers.com/list-of-information-technology-it-job-titles-2061498).
+
+Per la data di nascita abbiamo estratto interi casuali, poi convertiti in date
 
 ```r
+Random_dates <- as.Date(as.POSIXct(sample(0:670204800, size=15000, replace=T), origin="1970-01-01"))
+```
 
+Per il codice fiscale invece abbiamo semplicemente utilizzato una libreria chiamata [ifc tools](https://cran.r-project.org/package=ifctools) che genera un codice fiscale plausibile a partire da nome, cognome, sesso, data di nascita e codice catastale
+
+### Tabella conferenza
+
+Per via della loro distinzione in tre stati con diverse caratteristiche popolare la tabella "conferenza" è stato più complesso.
+
+Abbiamo deciso di simulare il ciclo di vita di una conferenza nel database, quindi creandola inizialmente come "indetta" e in seguito convertendola in "fissata" e "passata" in base alle date
+
+Tutte le conferenze, indipendentemente dallo stato, necessitano di un general chairman a loro assegnato. Per sceglierlo abbiamo semplicemente preso il primo invitato a ciascuna conferenza
+
+```r
+Conf_join_inviti <- merge(Conferenze, Inviti, by.x = c("argomento", "data"), by.y = ("argomento_conferenza", "data_conferenza"))
+Conf_join_inviti_unique <- Conf_join_inviti[!duplicated(Conf_join_inviti[c("argomento", "data")]),]
+Conferenze$general_chairman <- Conf_join_inviti_unique$CF
+```
+
+In base alle date delle conferenze abbiamo quindi stabilito lo stato in cui si trovassero per poi modificarle di conseguenza, aggiungendo il luogo alle conferenze fissate e luogo, almeno un articolo e conclusioni a quelle passate
+
+```r
+Indette <- Conferenze$data_scadenza > Sys.Date()
+Passate <- Conferenze$data < Sys.Date()
+Fissate <- !Indette & !Passate
+
+Conferenze$luogo[Passate | Fissate] <- sample(Luoghi, size=550, replace=T)
 ```
 
 # Analisi database
