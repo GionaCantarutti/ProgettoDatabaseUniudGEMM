@@ -24,7 +24,6 @@ Abbiamo svolto il progetto in varie fasi:
 - Comitato di Programma: Gestisce aspetti scientifici della conferenza. Nomina comitato dei revisori.
 - Comitato Organizzatore: Gestisce aspetti logistici finanziari. Inoltra gli inviti.
 - Comitato dei Revisori: Approva o respinge articoli sottomessi alla conferenza.
-- Comitato dei Revisori: Approva o respinge articoli sottomessi alla conferenza.
 - Working Group: Gruppo interessato ad una o più specifiche conferenze.
 - Persona: Individuo generico.
 - Rappresentante: Membro di un Working Group che rappresenta una nazione.
@@ -69,6 +68,8 @@ Abbiamo svolto il progetto in varie fasi:
 
 ## Diagramma E-R
 
+Tenendo di conto i requisiti, dopo qualche iterazione siamo giunti al seguente diagramma E-R
+
 \*immagine\*
 
 # Progettazione logica
@@ -77,11 +78,11 @@ Seguono rispettivamente la tabella volumi e la tabella delle frequenze, contenen
 
 ## Tabella volumi
 
-\*tabella\*
+![Tabella volumi](Risorse/Tabella_Volumi.jpg)
 
 ## Tabella frequenze
 
-\*tabella\*
+![Tabella frequenze](Risorse/Tabella_Frequenze.png)
 
 ## Analisi delle ridondanze
 
