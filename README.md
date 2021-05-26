@@ -70,7 +70,27 @@ Abbiamo svolto il progetto in varie fasi:
 
 Tenendo di conto i requisiti, dopo qualche iterazione siamo giunti al seguente diagramma E-R
 
-![Tabella volumi](Risorse/Diagramma_E-R.png)
+![Diagramma E-R](Risorse/Diagramma_E-R.png)
+
+Notiamo quindi che ci sono diversi cicli da prendere in considerazione
+
+![Diagramma E-R con cicli](Risorse/Diagramma_E-R_con_cicli.png)
+
+1. Il comitato organizzatore deve invitare esclusivamente alla conferenza che gestisce
+
+2. Tutti i membri attivi di un Working Group che partecipa ad una data conferenza devono essere invitati alla stessa
+
+3. Il general chairman deve essere invitato alla conferenza che gestisce
+
+4. Il chairman di un comitato deve esserne un membro
+
+5. Tutti i membri di un comitato assegnato ad una conferenza devono essere invitati alla stessa
+
+6. Questo ciclo non evidenzia nessun vincolo aggiuntivo
+
+7. Un articolo deve essere approvato per una conferenza dal comitato dei revisori ad essa assegnato
+
+8. Il comitato di prgoramma deve nominare il comitato dei revisori per la stessa conferenza a cui è assegnato
 
 # Progettazione logica
 
@@ -114,6 +134,16 @@ Seguono le operazioni che interagiscono con il numero di membri in un comitato c
 Come si evince dall’analisi, mantenere la ridondanza riduce gli accessi giornalieri di oltre 10 volte.
 
 ## Schema E-R ristrutturato
+
+Per prepararci alla conversione in schema relazionale abbiamo ristrutturato significativamente lo schema E-R
+
+![E-R ristrutturato](Risorse/E-R_ristrutturato_con_chiavi.png)
+
+Oltre ad aver rimosso gli attributi ridondanti ritenuti non necessari durante l'analisi delle ridondanze abbiamo anche rimosso la generalizzazione delle conferenze e dei comitati.   
+
+Per le conferenze abbiamo aggiunto l'attributo "Stato" alla conferenza il quale, con l'aiuto di alcune restrizioni aggiuntive, ricoprerà lo stesso ruolo della generalizzazione rimossa.
+
+Per quanto riguarda i comitati, invece, è bastato semplicemente rimuovere l'entità generica e aggiungere le sue relazioni su ciascuno dei tipi di comitato individualmente
 
 ## Schema relazionale
 
