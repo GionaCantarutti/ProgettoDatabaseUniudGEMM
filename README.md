@@ -242,7 +242,7 @@ CHECK (
 		AND luogo is not null
 		AND data is not null
 		AND numero_articoli > 0
-	) OR stato != ’PASSATA’
+	) OR stato != 'PASSATA'
 );
 ```
 
