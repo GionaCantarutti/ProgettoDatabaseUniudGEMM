@@ -125,11 +125,19 @@ Seguono le operazioni che interagiscono con il numero di membri in un comitato c
 
 #### Con ridondanza:
 
-\* analisi con schemini \*
+![Con ridondanza 1](Risorse/Analisi_conridondanze.png)
+
+![Con ridondanza 2](Risorse/Analisi_conridondanze2.png)
+
+**Costo giornaliero totale: 90**
 
 #### Senza ridondanza:
 
-\* analisi con schemini \*
+![Senza ridondanza 1](Risorse/Analisi_senzaridondanze.png)
+
+![Senza ridondanza 2](Risorse/Analisi_senzaridondanze2.png)
+
+**Costo giornaliero totale: 961**
 
 Come si evince dall’analisi, mantenere la ridondanza riduce gli accessi giornalieri di oltre 10 volte.
 
@@ -146,6 +154,8 @@ Per le conferenze abbiamo aggiunto l'attributo "Stato" alla conferenza il quale,
 Per quanto riguarda i comitati, invece, è bastato semplicemente rimuovere l'entità generica e aggiungere le sue relazioni su ciascuno dei tipi di comitato individualmente
 
 ## Schema relazionale
+
+![Schema relazionale](Risorse/Schema_relazionale.png)
 
 # Progettazione fisica
 
