@@ -186,11 +186,11 @@ CREATE TABLE conferenze.conferenza
   numero_articoli smallint DEFAULT 0,
   general_chairman character(16),
   numero_membri_org smallint DEFAULT 0,
-  chairman_org character(16),
+  chairman_org character(16) NOT NULL,
   numero_membri_prog smallint DEFAULT 0,
-  chairman_prog character(16),
+  chairman_prog character(16) NOT NULL,
   numero_membri_rev smallint DEFAULT 0,
-  chairman_rev character(16),
+  chairman_rev character(16) NOT NULL,
   CONSTRAINT conferenza_pkey PRIMARY KEY (data, argomento),
   CONSTRAINT conferenza_chairman_org_fkey FOREIGN KEY (chairman_org, data, argomento)
   	REFERENCES conferenze.membro_org (cf, data_conferenza, argomento_conferenza) MATCH FULL
