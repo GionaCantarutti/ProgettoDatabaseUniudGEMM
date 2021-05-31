@@ -266,10 +266,10 @@ $$;
 
 ```sql
 CREATE CONSTRAINT TRIGGER aggiunta_articolo
-after insert
+AFTER INSERT
 ON conferenze.approvazione_articolo
 DEFERRABLE
-FOR EACH row
+FOR EACH ROW
 EXECUTE PROCEDURE aggiunto_articolo();
 
 CREATE OR REPLACE FUNCTION aggiunto_articolo()
