@@ -155,7 +155,7 @@ Per quanto riguarda i comitati, invece, è bastato semplicemente rimuovere l'ent
 
 ## Schema relazionale
 
-![Schema relazionale](Risorse/Schema_relazionale.png)
+![Schema relazionale](Risorse/Schema_relazionale.PNG)
 
 # Progettazione fisica
 
