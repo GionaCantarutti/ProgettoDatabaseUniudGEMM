@@ -34,7 +34,7 @@ Abbiamo svolto il progetto in varie fasi:
 
 # Analisi dei requisiti
 
-- Analizzando il testo della consegna ed espandendo utilizzando risorse in rete abbiamo riconosciuto i seguenti fondamentali requisiti:
+Analizzando il testo della consegna ed espandendo utilizzando risorse in rete abbiamo riconosciuto i seguenti fondamentali requisiti:
 - Il database è atto alla gestione di conferenze IFIP.
 - Le conferenze trattano problemi di interesse per uno o più Working Groups.
 - A ogni Working Group è assegnato un Comitato Tecnico.
@@ -351,7 +351,12 @@ numero_articoli_passate <- dbGetQuery(con, "SELECT numero_articoli
 ```
 
 ```r
-grafico_articoli <- boxplot(numero_articoli_passate$numero_articoli, horizontal = T, xlab = "Frequency", col = "yellow")
+grafico_articoli <- boxplot(
+                            numero_articoli_passate$numero_articoli,
+                            horizontal = T,
+                            xlab = "Frequency",
+                            col = "yellow"
+                            )
 ```
 
 ![Boxplot](Risorse/boxplot.png)
