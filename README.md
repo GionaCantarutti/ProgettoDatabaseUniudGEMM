@@ -41,7 +41,7 @@ Analizzando il testo della consegna ed espandendo utilizzando risorse in rete ab
 - I comitati tecnici sono 13 e si dividono per argomenti trattati.
 - Un Comitato Tecnico è composto da rappresentanti nazionali.
 - Alla conferenza partecipano solo e soltanto gli invitati.
-- Ogni membro di un comitato lla conferenza riceve l'invito.
+- Ogni membro di un comitato della conferenza riceve l'invito.
 - Il numero dei partecipanti a una conferenza deve rispettare requisiti minimi e massimi.
 - Il Comitato di Programma gestisce gli aspetti scientifici della conferenza.
 - Il Comitato Organizzatore si occupa degli aspetti logistici della conferenza.
@@ -66,13 +66,17 @@ Analizzando il testo della consegna ed espandendo utilizzando risorse in rete ab
 
 # Progettazione concettuale
 
+La progettazione concettuale è il primo step nel quale il database comincia a prendere forma. Lo scopo di tale fase è di sviluppare un diagramma E-R che rappresenterà tutte le entità presenti nel database e le relazioni tra esse, usando i requisiti stabiliti in precedenza come linee guida.
+
 ## Diagramma E-R
 
 Tenendo di conto i requisiti, dopo qualche iterazione siamo giunti al seguente diagramma E-R
 
 ![Diagramma E-R](Risorse/Diagramma_E-R.png)
 
-Notiamo quindi che ci sono diversi cicli da prendere in considerazione
+Un aspetto notabile del diagramma E-R è la suddivisione delle conferenze in tre stadi differenti e la rappresentazione tramite generalizzazione degli attributi e relazioni comuni a tutti gli stadi di conferenze. Tale suddivisione è necessaria al fine di rispettare alcuni requisiti (come la necessità per gli inviti di essere all'interno di un range prestabilito, il che sarebbe difficile da rispettare se anche una conferenza appena indetta avesse questa restrizione) 
+
+Notiamo anche che ci sono diversi cicli da prendere in considerazione
 
 ![Diagramma E-R con cicli](Risorse/Diagramma_E-R_con_cicli.png)
 
