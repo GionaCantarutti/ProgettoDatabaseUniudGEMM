@@ -8,7 +8,7 @@ Alla conferenza possono partecipare solo persone che hanno ricevuto un invito. L
 La conferenza è organizzata da due comitati: il Comitato di Programma e il Comitato Organizzatore. Il primo cura gli aspetti scientifici della conferenza, nominando il Comitato dei Revisori, che esaminerà gli articolo sottomessi alla conferenza e deciderà quali articoli accettare, rispettando il vincolo sul numero massimo prestabilito. Il secondo cura gli aspetti finanziari e logistici, gli inviti e la pubblicità. Ogni comitato è costituito da esperti ed è previsto un Chairman per ogni comitato e un General Chairman per la conferenza. Tutti i comitati lavorano utilizzando dati comuni che vanno raccolti ed elaborati in modo consistente.
 Si definisca uno schema Entità-Relazioni che descriva il contenuto informativo del sistema, illustrando con chiarezza le eventuali assunzioni fatte. Lo schema dovrà essere completato con attributi ragionevoli per ciascuna entità (identificando le possibili chiavi) e relazione. Vanno specificati accuratamente i vincoli di cardinalità e partecipazione di ciascuna relazione.”
 
-Abbiamo svolto il progetto in varie fasi:
+Il progetto è suddiviso nelle seguenti fasi, approfondite nel resto della relazione:
 - Analisi dei requisiti
 - Progettazione concettuale
 - Progettazione logica
@@ -18,23 +18,29 @@ Abbiamo svolto il progetto in varie fasi:
 
 # Glossario
 
+Seguono i termini fondamentali identificati per modellare in maniera non ambigua il dominio del problema:
+
 - Conferenza: Singola conferenza IFIP.
 - Comitato: Comitato generico. Composto da almeno un membro e con esattamente un Chairman.
 - Comitato Tecnico: Comitato assegnato ad un Working Group in una conferenza.
-- Comitato di Programma: Gestisce aspetti scientifici della conferenza. Nomina comitato dei revisori.
-- Comitato Organizzatore: Gestisce aspetti logistici finanziari. Inoltra gli inviti.
-- Comitato dei Revisori: Approva o respinge articoli sottomessi alla conferenza.
+- Comitato di Programma: Gestisce gli aspetti scientifici della conferenza. Nomina il comitato dei revisori.
+- Comitato Organizzatore: Gestisce gli aspetti logistici e finanziari. Si occupa di inoltrare gli inviti.
+- Comitato dei Revisori: Approva o respinge gli articoli sottomessi alla conferenza.
 - Working Group: Gruppo interessato ad una o più specifiche conferenze.
-- Persona: Individuo generico.
 - Rappresentante: Membro di un Working Group che rappresenta una nazione.
 - Chairman: Individuo a capo di un comitato.
 - General Chairman: Individuo a capo di una conferenza.
 - Invitato: Individuo invitato ad una conferenza.
-- Articolo: Articolo sottomesso o approvato ad una o più conferenze. C'è un limite massimo di articoli approvabili per ogni conferenza.
+- Articolo: Articolo sottomesso o approvato ad una o più conferenze.
 
 # Analisi dei requisiti
 
-Analizzando il testo della consegna ed espandendo utilizzando risorse in rete abbiamo riconosciuto i seguenti fondamentali requisiti:
+L'analisi dei requisiti è l'attività preliminare dello sviluppo il cui scopo è delineare le funzionalità necessarie e i vincoli del database.
+
+Per svolgere suddetta analisi, oltre ad uno studio approfondito della consegna, sono stati consultati il [sito ufficiale IFIP](https://www.ifip.org//) e [la rispettiva pagina Wikipedia](https://it.wikipedia.org/wiki/International_Federation_for_Information_Processing).
+
+Sono quindi elencati i requisiti stabiliti:
+
 - Il database è atto alla gestione di conferenze IFIP.
 - Le conferenze trattano problemi di interesse per uno o più Working Groups.
 - A ogni Working Group è assegnato un Comitato Tecnico.
@@ -70,11 +76,11 @@ La progettazione concettuale è il primo step nel quale il database comincia a p
 
 ## Diagramma E-R
 
-Tenendo di conto i requisiti, dopo qualche iterazione siamo giunti al seguente diagramma E-R
+Tenendo conto dei requisiti è stato modellato il seguente diagramma E-R:
 
 ![Diagramma E-R](Risorse/Diagramma_E-R.png)
 
-Un aspetto notabile del diagramma E-R è la suddivisione delle conferenze in tre stadi differenti e la rappresentazione tramite generalizzazione degli attributi e relazioni comuni a tutti gli stadi di conferenze. Tale suddivisione è necessaria al fine di rispettare alcuni requisiti (come la necessità per gli inviti di essere all'interno di un range prestabilito, il che sarebbe difficile da rispettare se anche una conferenza appena indetta avesse questa restrizione) 
+Un aspetto notabile del diagramma E-R è la suddivisione delle conferenze in tre stadi differenti e la rappresentazione tramite generalizzazione degli attributi e relazioni comuni a tutti gli stadi di conferenze. Tale suddivisione è necessaria al fine di rispettare alcuni requisiti, come la necessità per gli inviti di essere all'interno di un _range_ prestabilito, il che sarebbe difficile da rispettare se anche una conferenza appena indetta avesse questa restrizione.
 
 Notiamo anche che ci sono diversi cicli da prendere in considerazione
 
@@ -98,7 +104,11 @@ Notiamo anche che ci sono diversi cicli da prendere in considerazione
 
 # Progettazione logica
 
-Seguono rispettivamente la tabella volumi e la tabella delle frequenze, contenenti dati arbitrari ma verosimili.
+Lo scopo della progettazione logica è quello di giungere ad un modello relazionale. Prima di poterlo costruire, però, è fondamentale analizzare le ridondanze presenti nello schema E-R e determinare quali di esse vadano mantenute e quali scartate.
+
+Preliminariamente alla progettazione logica è necessario avere però a disposizione le tabelle dei volumi e delle frequenze necessarie all'analisi delle ridondanze. Tali tabelle, non provvedute dalla consegna, sono popolate arbitrariamente cercando di mantenere verosimilità rispetto al dominio e tenendo conto degli ipotetici _use case_ del database
+
+Seguono quindi le suddette:
 
 ## Tabella volumi
 
@@ -106,11 +116,13 @@ Seguono rispettivamente la tabella volumi e la tabella delle frequenze, contenen
 
 ## Tabella frequenze
 
+Per alcuni valori è stato ritenuto opportuno distinguere tra frequenza mediana e frequenza di picco in quanto alcune operazioni, sebbene raramente utilizzate, hanno picchi di utilizzo molto alti in specifiche circostanze
+
 ![Tabella frequenze](Risorse/Tabella_Frequenze.png)
 
 ## Analisi delle ridondanze
 
-Utilizzando le precedenti tabelle abbiamo analizzato la possibilità di utilizzare ridondanze per rappresentare alcuni dati e abbiamo ottenuto i seguenti risultati:
+Utilizzando le precedenti tabelle è stata analizzata la possibilità di utilizzare ridondanze per rappresentare alcuni dati, seguono i risultati:
 
 * **Da mantenere:**
   - Il numero di membri in un working group
@@ -125,7 +137,7 @@ Utilizzando le precedenti tabelle abbiamo analizzato la possibilità di utilizza
 Per brevità riportiamo il processo di analisi di solo uno di questi dati, in particolare il numero di membri in un comitato.
 
 ### Analisi numero di membri in un comitato:
-Seguono le operazioni che interagiscono con il numero di membri in un comitato con la loro tabella degli accessi e frequenza di utilizzo, divise nei due casi (presenza e assenza di ridondanza).
+Seguono le operazioni che interagiscono con il numero di membri in un comitato con la loro tabella degli accessi e frequenza di utilizzo, divise nei due casi: presenza e assenza di ridondanza.
 
 #### Con ridondanza:
 
@@ -147,25 +159,29 @@ Come si evince dall’analisi, mantenere la ridondanza riduce gli accessi giorna
 
 ## Schema E-R ristrutturato
 
-Per prepararci alla conversione in schema relazionale abbiamo ristrutturato significativamente lo schema E-R
+In preparazione allo sviluppo del modello relazionale è necessario ristrutturare significativamente lo schema E-R:
 
 ![E-R ristrutturato](Risorse/E-R_ristrutturato_con_chiavi.png)
 
-Oltre ad aver rimosso gli attributi ridondanti ritenuti non necessari durante l'analisi delle ridondanze abbiamo anche rimosso la generalizzazione delle conferenze e dei comitati.   
+Oltre ad aver rimosso gli attributi ridondanti ritenuti non necessari durante l'analisi delle ridondanze è anche stata rimossa la generalizzazione delle conferenze e dei comitati.   
 
-Per le conferenze abbiamo aggiunto l'attributo "Stato" alla conferenza il quale, con l'aiuto di alcune restrizioni aggiuntive, ricoprerà lo stesso ruolo della generalizzazione rimossa.
+Per le conferenze è stato aggiunto l'attributo "Stato" alla conferenza il quale, con l'aiuto di alcune restrizioni aggiuntive, ricoprerà lo stesso ruolo della generalizzazione rimossa.
 
 Per quanto riguarda i comitati, invece, è bastato semplicemente rimuovere l'entità generica e aggiungere le sue relazioni su ciascuno dei tipi di comitato individualmente
 
 ## Schema relazionale
 
+Partendo dallo schema E-R opportunamente ristrutturato è stato sviluppato il seguente schema relazionale
+
 ![Schema relazionale](Risorse/Tabella_relazionale.jpg)
+
+Nello schema sono evidenziate in verde gli attributi _not null_, sottolineate le _primary keys_ e in corsivo le _foreign keys_
 
 # Progettazione fisica
 
-Abbiamo usato Postresql per progettare fisicamente il database, riportiamo alcuni frammenti di codice rilevanti
+Il linguaggio utilizzato per progettare fisicamente il database è Postresql, sono di seguito riportati alcuni frammenti di codice rilevanti.
 
-Visto che le conferenze di distinguono in tre stati abbiamo deciso di creare un tipo di dati dedicato
+Visto che le conferenze si distinguono in tre stati è stato ritenuto opportuno creare un tipo di dati dedicato.
 
 ```sql
 CREATE TYPE STATO_CONFERENZA AS ENUM
@@ -174,7 +190,7 @@ CREATE TYPE STATO_CONFERENZA AS ENUM
 );
 ```
 
-La tabella centrale e più importante del database è "conferenza", qui sotto riportiamo il codice per crearla
+La tabella centrale e più importante del database è "conferenza", qui sotto il codice per crearla.
 
 ```sql
 CREATE TABLE conferenze.conferenza
@@ -215,7 +231,7 @@ CREATE TABLE conferenze.conferenza
 );
 ```
 
-La tabella necessita di diversi constraint aggiuntivi, mostriamo quelli che abbiamo messo per controllare la correttezza della conferenza in base al suo stato
+La tabella necessita di diversi constraint aggiuntivi, sono mostrati quelli aggiunti per controllare la correttezza della conferenza in base al suo stato.
 
 ```sql
 ALTER TABLE conferenze.conferenza
@@ -250,8 +266,8 @@ CHECK (
 );
 ```
 
-Come si evince dal codice sopra riportato, il constraint "controlla_fissata" necessita della funzione "conteggio_inviti" che riportiamo qui sotto.   
-Riportiamo inoltre i trigger utilizzati per mantenere l'attributo ridondante "numero_articoli", anche esso utilizzato nello stesso constraint
+Come si evince dal codice sopra riportato, il constraint "controlla_fissata" necessita della funzione "conteggio_inviti" che viene riportata qui sotto.   
+Sono di seguito riportati, inoltre, i trigger utilizzati per mantenere l'attributo ridondante "numero_articoli", anche esso utilizzato nello stesso constraint.
 
 ```sql
 CREATE OR REPLACE FUNCTION conteggio_inviti( data date, arg character varying(50) )
@@ -293,27 +309,27 @@ $$;
 
 # Implementazione
 
-Tramite R abbiamo generato dati casuali e semi-plausibili per popolare il database, riportiamo alcuni esempi notabili. Il codice mostrato in questa sezione non è quello originariamente usato da noi (in quanto è andato perso), ma è una ricostruzione apposita per dimostrare i concetti esplicati nella relazione
+Sono stati generati tramite R dei dati casuali e semi-plausibili per popolare il database, sono riportati alcuni esempi notabili. Il codice mostrato in questa sezione non è quello originariamente usato (in quanto è andato perduto), ma è una ricostruzione apposita per dimostrare i concetti esplicati nella relazione.
 
 ### Tabella persona
 
-Una delle prime e più semplici tabelle che abbiamo riempito è stata "persona". Nome e cognome sono estratti casualmente dal [file provveduto dal prof. Della Monica](https://users.dimi.uniud.it/~dario.dellamonica/teaching/19_20_1sem_BDlab/19_20_1sem_BDlab.php) e nella stessa maniera abbiamo estratto casualmente le specializzazioni [da questo documento, a partire da pagina 17](https://networking.ifip.org/images/IFIP_Networking_2020-Booklet.pdf) e le professioni [da questa pagina web](https://www.thebalancecareers.com/list-of-information-technology-it-job-titles-2061498).
+Una delle prime e più semplici tabelle riempite è stata "persona". Nome e cognome sono estratti casualmente dal [file provveduto dal prof. Della Monica](https://users.dimi.uniud.it/~dario.dellamonica/teaching/19_20_1sem_BDlab/19_20_1sem_BDlab.php) mentre le specializzazioni vengono [dal documento sulle conferenze di Parigi nel 2020](https://networking.ifip.org/images/IFIP_Networking_2020-Booklet.pdf) a partire da pagina 17. Infine, le professioni sono tratte dall'articolo ["IT Jobs: Career Options, Job Titles, and Descriptions"](https://www.thebalancecareers.com/list-of-information-technology-it-job-titles-2061498) di Alison Doyle, scritto per [The Balance Careers](https://www.thebalancecareers.com/).
 
-Per la data di nascita abbiamo estratto interi casuali, poi convertiti in date
+Per la data di nascita sono stati utilizzati interi casuali, rappresentativi di _time stamp_ unix, poi convertiti in date.
 
 ```r
 Random_dates <- as.Date(as.POSIXct(sample(0:670204800, size=15000, replace=T), origin="1970-01-01"))
 ```
 
-Per il codice fiscale invece abbiamo semplicemente utilizzato una libreria chiamata [ifc tools](https://cran.r-project.org/package=ifctools) che genera un codice fiscale plausibile a partire da nome, cognome, sesso, data di nascita e codice catastale
+Per il codice fiscale si è usufruito di una libreria chiamata [ifc tools](https://cran.r-project.org/package=ifctools) come supporto, la quale genera un codice fiscale plausibile a partire da nome, cognome, sesso, data di nascita e codice catastale.
 
 ### Tabella conferenza
 
-Per via della loro distinzione in tre stati con diverse caratteristiche popolare la tabella "conferenza" è stato più complesso.
+Per via della loro distinzione in tre stati con diverse caratteristiche, popolare la tabella "conferenza" è stato più complesso.
 
-Abbiamo deciso di simulare il ciclo di vita di una conferenza nel database, quindi creandola inizialmente come "indetta" e in seguito convertendola in "fissata" e "passata" in base alle date
+Cercando di simulare il ciclo di vita di una conferenza nel database, le conferenze sono inizialmente definite indette e in seguito convertite in fissate e passate in base alle date.
 
-Tutte le conferenze, indipendentemente dallo stato, necessitano di un general chairman a loro assegnato. Per sceglierlo abbiamo semplicemente preso il primo invitato a ciascuna conferenza
+Tutte le conferenze, indipendentemente dallo stato, necessitano di un general chairman a loro assegnato. Per sceglierlo è stato semplicemente preso il primo invitato a ciascuna conferenza.
 
 ```r
 Conf_join_inviti <- merge(Conferenze, Inviti, by.x = c("argomento", "data"), by.y = ("argomento_conferenza", "data_conferenza"))
@@ -321,7 +337,7 @@ Conf_join_inviti_unique <- Conf_join_inviti[!duplicated(Conf_join_inviti[c("argo
 Conferenze$general_chairman <- Conf_join_inviti_unique$CF
 ```
 
-In base alle date delle conferenze abbiamo quindi stabilito lo stato in cui si trovassero per poi modificarle di conseguenza, aggiungendo il luogo alle conferenze fissate e luogo, almeno un articolo e conclusioni a quelle passate
+In base alle date delle conferenze è stato quindi stabilito il loro stato per poi modificarle di conseguenza, aggiungendo il luogo alle conferenze fissate e luogo, almeno un articolo e conclusioni a quelle passate.
 
 ```r
 Indette <- Conferenze$data_scadenza > Sys.Date()
@@ -333,9 +349,9 @@ Conferenze$luogo[Passate | Fissate] <- sample(Luoghi, size=550, replace=T)
 
 # Analisi database
 
-Per l'analisi dati abbiamo scelto di utilizzare 4 grafici diversi: boxplot, histogram, barplot e heatmap
+Per l'analisi dati sono stati utilizzati 4 grafici diversi: boxplot, histogram, barplot e heatmap.
 
-Prima di poter realizzare i grafici dobbiamo però connetterci al database
+Prima di poter realizzare i grafici è necessario però connettersi al database:
 
 ```r
 library("RPostgreSQL")
@@ -346,7 +362,7 @@ con <- dbConnect(drv, dbname="conferenze",
 
 ## Boxplot
 
-Per il boxplot abbiamo deciso di rappresentare la quantità di articoli per ogni conferenza già passata
+Il boxplot rappresenta la quantità di articoli per ogni conferenza già passata:
 
 ```r
 numero_articoli_passate <- dbGetQuery(con, "SELECT numero_articoli 
@@ -367,7 +383,7 @@ grafico_articoli <- boxplot(
 
 ## Histogram
 
-Per l'istogramma mostriamo gli anni di nascita di tutti i Network Administrator presenti nel database
+L'istogramma raffigura gli anni di nascita di tutti i Network Administrator presenti nel database:
 
 ```r
 network_administrator <- dbGetQuery(con, "SELECT data_nascita 
@@ -375,7 +391,7 @@ network_administrator <- dbGetQuery(con, "SELECT data_nascita
                                           WHERE professione='Network Administrator'")
 ```
 
-Una volta eseguito il query scartiamo giorno e mese dalle date per una visualizzazione delle didascalie più pulita
+Una volta eseguito il query si scartano giorno e mese dalle date per una visualizzazione delle didascalie più pulita
 
 ```r
 a <- format(as.Date(network_administrator$data_nascita,format="%d/%m/%Y"), "%Y")
@@ -397,7 +413,7 @@ hist(
 
 ## Barplot
 
-Abbiamo invece utilizzato il barplot per mostrare la quantità di professionisti in ciascuna disciplina all'interno di uno specifico Working Group (in questo caso WG-1.1)
+Il barplot è invece utilizzato per mostrare la quantità di professionisti in ciascuna disciplina all'interno di uno specifico Working Group (in questo caso WG-1.1):
 
 ```r
 job_in_wg <- dbGetQuery(con, "SELECT persona.professione 
@@ -421,7 +437,7 @@ barplot(
 
 ## Heatmap
 
-L'heatmap rappresenta le distribuzioni di professioni e specializzazioni all'interno di uno specifico Working Group (in questo caso WG-2.5)
+L'heatmap qui rappresenta le distribuzioni di professioni e specializzazioni all'interno di uno specifico Working Group (in questo caso WG-2.5):
 
 ```r
 prof_spec <- dbGetQuery(con, "SELECT persona.professione, persona.specializzazione 
@@ -431,7 +447,7 @@ prof_spec <- dbGetQuery(con, "SELECT persona.professione, persona.specializzazio
 
 ```
 
-Una volta eseguito il query ne abbiamo usato il risultato per riempire una matrice le cui dimensioni sono rispettivamente professione e specializzazione e dove il valore di ciascuna cella rappresenta quante persone abbiano la corrispondente combinazione di professione e specializzazione
+Una volta eseguito il query il risultato viene utilizzato per riempire una matrice le cui dimensioni sono rispettivamente professione e specializzazione e dove il valore di ciascuna cella rappresenta quante persone abbiano la corrispondente combinazione di professione e specializzazione:
 
 ```r
 unique_prof <- unique(prof_spec$professione)
@@ -444,7 +460,7 @@ for (i in 1:length(prof_spec$professione)) {
 }
 ```
 
-Infine abbiamo utilizzato la matrice generata per realizzare la heatmap
+Infine la matrice generata viene utilizzata per realizzare la heatmap:
 
 ```r
 heatmap(
