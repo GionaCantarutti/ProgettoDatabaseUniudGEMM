@@ -1,87 +1,108 @@
-# Introduction
+# Introduzione
 
-This project, ment to test our ability to fully design and develop a database from the ground up, has been developed by four people for a university assignment
+Il progetto riguarda la creazione di un database di supporto all'organizzazione delle working conferences del IFIP.
+La consegna del problema è la seguente:
 
-The assignment has been originally developed in Italian and this is its translation to english. The original version can be found in this very repo in the file named "relazione"
+“Si vuole progettare una base di dati di supporto all'organizzazione delle working conferences dell'IFIP (International Federation for Information Processing). Una IFIP Conference è una conferenza internazionale intesa a riunire esperti di tutti i paesi aderenti al IFIP per discutere problemi che interessano uno o più IFIP Working Group. Ogni Working Group opera sotto gli auspici di un Technical Committee costituito dai rappresentanti nazionali dei paesi aderenti al IFIP.
+Alla conferenza possono partecipare solo persone che hanno ricevuto un invito. L'invito è inviato a tutti i membri dei Working Groups e Technical Committees interessati. Il numero delle persone che parteciperanno ai lavori deve essere superiore ad una soglia minima, per garantire la copertura dei costi, ed inferiore ad una soglia massima, per non superare le capacità ricettive delle strutture.
+La conferenza è organizzata da due comitati: il Comitato di Programma e il Comitato Organizzatore. Il primo cura gli aspetti scientifici della conferenza, nominando il Comitato dei Revisori, che esaminerà gli articolo sottomessi alla conferenza e deciderà quali articoli accettare, rispettando il vincolo sul numero massimo prestabilito. Il secondo cura gli aspetti finanziari e logistici, gli inviti e la pubblicità. Ogni comitato è costituito da esperti ed è previsto un Chairman per ogni comitato e un General Chairman per la conferenza. Tutti i comitati lavorano utilizzando dati comuni che vanno raccolti ed elaborati in modo consistente.
+Si definisca uno schema Entità-Relazioni che descriva il contenuto informativo del sistema, illustrando con chiarezza le eventuali assunzioni fatte. Lo schema dovrà essere completato con attributi ragionevoli per ciascuna entità (identificando le possibili chiavi) e relazione. Vanno specificati accuratamente i vincoli di cardinalità e partecipazione di ciascuna relazione.”
 
-### Assignment (translated to english)
+Il progetto è suddiviso nelle seguenti fasi, approfondite nel resto della relazione:
+- Analisi dei requisiti
+- Progettazione concettuale
+- Progettazione logica
+- Progettazione fisica
+- Implementazione
+- Analisi dei dati
 
-“The goal is to create a database to support the conferences held by the IFIP (International Federation for Information Processing). An IFIP conference is an international conference ment to unite experts from all participating nations to discuss problems of interest to one or more IFIP Working Groups. Each Working Group works under a Technical Committee made up from national representatives.
-Only invited people may participate to the conference. The invitation is sent to every member of each Working Group and Techical Committee intereasted in the conference. The number of participants must be withing a certain range depending on the conference.
-The conference is organized by  two committees: the Program Committee and the Logistical Committee. The former handels the scientific aspects of the conference and nominates a Committee of Reviewers that will be tasked with approving the submitted papers for the conference while respecting a maximum threshold. The latter handles the logistical and financial aspects of the conference and it's tasked with sending the invitations. Each committee is made up by experts and each has a chairman. A general chairman is also choosen for the conference.”
+# Glossario
 
-The project is split in the following phases:
-- Requirement analysis
-- Conceptual design
-- Logical design
-- Physical design
-- Implementation
-- Data analysis
+Seguono i termini fondamentali identificati per modellare in maniera non ambigua il dominio del problema:
+
+- Conferenza: Singola conferenza IFIP.
+- Comitato: Comitato generico. Composto da almeno un membro e con esattamente un Chairman.
+- Comitato Tecnico: Comitato assegnato ad un Working Group in una conferenza.
+- Comitato di Programma: Gestisce gli aspetti scientifici della conferenza. Nomina il comitato dei revisori.
+- Comitato Organizzatore: Gestisce gli aspetti logistici e finanziari. Si occupa di inoltrare gli inviti.
+- Comitato dei Revisori: Approva o respinge gli articoli sottomessi alla conferenza.
+- Working Group: Gruppo interessato ad una o più specifiche conferenze.
+- Rappresentante: Membro di un Working Group che rappresenta una nazione.
+- Chairman: Individuo a capo di un comitato.
+- General Chairman: Individuo a capo di una conferenza.
+- Invitato: Individuo invitato ad una conferenza.
+- Articolo: Articolo sottomesso o approvato ad una o più conferenze.
 
 # Analisi dei requisiti
 
-To develop this anaysis we consulted the [official IFIP website](https://www.ifip.org//) and [its Wikipedia page](https://it.wikipedia.org/wiki/International_Federation_for_Information_Processing).
+L'analisi dei requisiti è l'attività preliminare dello sviluppo il cui scopo è delineare le funzionalità necessarie e i vincoli del database.
 
-What follows are the requirements we deemed necessary:
+Per svolgere suddetta analisi, oltre ad uno studio approfondito della consegna, sono stati consultati il [sito ufficiale IFIP](https://www.ifip.org//) e [la rispettiva pagina Wikipedia](https://it.wikipedia.org/wiki/International_Federation_for_Information_Processing).
 
--	The database will handle IFIP Conferences
--	Each conference is held to discuss problems that interest one or multiple Working Groups
--	Each Working Group works under a Technical Committee
--	There are a total of 13 Technical Committees devided by topics
--	Each Working Group is made up by national representatives
--	Only invited people may participate
--	Every member of intereasted committees or Working Groups is invited
--	The number of partecipants must be in range (minP, maxP)
--	Program Committee is in charge of scientific aspects
--	Logistical Committee is in charge of logistics
--	Logistical Committee sends the invitations
--	Program Committee nominates a Committee of Reviewers
--	Committee of Reviewers approves or rejects papers submitted for the conference
--	Submitted articles that are yet to be reviewed are not to be included in the database
--	There cannot be more than maxA papers approved for a given conference
--	Each committee has a chairman
--	Each conference has a general chairman
--	Every committee except Technical Committees are strictly relative to a specific conference
--	Techical Committees exist indipendently of any specific conference and don't have a chairman
--	An individual is not restricted in any way from being part of multiple committees at the same time
--	An individual can be invited to a conference without being part of any committee
--	It is necessary to include a history of each Working Group in the database
--	An individual cannot be part of a Technical Committee without being part of one of its Working Groups
--	A Working Group can have no members in special situations
--	A chairman for a committee must be choosen when the committee is created
--	A genral chairman for a conference must be choosen when the conference is created
+Sono quindi elencati i requisiti stabiliti:
 
-# Conceptual design
+- Il database è atto alla gestione di conferenze IFIP.
+- Le conferenze trattano problemi di interesse per uno o più Working Groups.
+- A ogni Working Group è assegnato un Comitato Tecnico.
+- I comitati tecnici sono 13 e si dividono per argomenti trattati.
+- Un Comitato Tecnico è composto da rappresentanti nazionali.
+- Alla conferenza partecipano solo e soltanto gli invitati.
+- Ogni membro di un comitato della conferenza riceve l'invito.
+- Il numero dei partecipanti a una conferenza deve rispettare requisiti minimi e massimi.
+- Il Comitato di Programma gestisce gli aspetti scientifici della conferenza.
+- Il Comitato Organizzatore si occupa degli aspetti logistici della conferenza.
+- Il Comitato Organizzatore inoltra gli inviti.
+- Il Comitato di Programma nomina il Comitato dei Revisori.
+- Il Comitato dei Revisori approva o respinge gli articoli sottomessi alla conferenza.
+- Gli articoli sottomessi non ancora approvati non vengono modellati nel database.
+- Non possono essere accettati più di massimo di articoli in una data conferenza.
+- Ogni comitato (tranne quelli tecnici) ha un Chairman.
+- Ogni conferenza ha un General Chairman.
+- I comitati (tranne quelli tecnici) sono relativi a una singola conferenza.
+- Un individuo può far parte di più di un comitato allo stesso tempo.
+- Un individuo può far parte di più Working Groups o comitati tecnici allo stesso tempo.
+- Un individuo può essere invitato anche se non appartiene a un comitato.
+- E' necessario modellare uno storico dei comitati tecnici.
+- Le conferenze vanno generalizzate in base al loro status (indetta, fissata e passata).
+- Una persona non può fare parte di un Comitato Tecnico senza fare parte di uno dei suoi Working Group.
+- Un Working Group può non avere partecipanti come alla creazione o quando viene spopolato.
+- I comitati di conferenza a essa legati vengono creati prima di quest'ultima.
+- I comitati di conferenza vengono creati già con il Chairman assegnato.
+- La conferenza viene creata con il General Chairman assegnato.
 
-The conceptual design is the first phase in which the database starts to take shape. The main objective of such phase is to develop an E-R shcema that properly fulfills all the previously ensablished requirements.
+# Progettazione concettuale
 
-## E-R Schema
+La progettazione concettuale è il primo step nel quale il database comincia a prendere forma. Lo scopo di tale fase è di sviluppare un diagramma E-R che rappresenterà tutte le entità presenti nel database e le relazioni tra esse, usando i requisiti stabiliti in precedenza come linee guida.
+
+## Diagramma E-R
+
+Tenendo conto dei requisiti è stato modellato il seguente diagramma E-R:
 
 ![Diagramma E-R](Risorse/Diagramma_E-R.png)
 
-It's worth noting how conferences are split into three possible states and that such states are modeled by using generalizations so that common attributes would not be repeated.
+Un aspetto notabile del diagramma E-R è la suddivisione delle conferenze in tre stadi differenti e la rappresentazione tramite generalizzazione degli attributi e relazioni comuni a tutti gli stadi di conferenze. Tale suddivisione è necessaria al fine di rispettare alcuni requisiti, come la necessità per gli inviti di essere all'interno di un _range_ prestabilito, il che sarebbe difficile da rispettare se anche una conferenza appena indetta avesse questa restrizione.
 
-It is then important to analyze the cycles that appear in the schema:
+Notiamo anche che ci sono diversi cicli da prendere in considerazione
 
 ![Diagramma E-R con cicli](Risorse/Diagramma_E-R_con_cicli.png)
 
-1. The organizational committee shall excusively invite to its conference
+1. Il comitato organizzatore deve invitare esclusivamente alla conferenza che gestisce
 
-2. Every active member of a Working Group shall be invited to any conference in which the Working Group takes part
+2. Tutti i membri attivi di un Working Group che partecipa ad una data conferenza devono essere invitati alla stessa
 
-3. The General Chairman shall be invited to the conference it is assigned to
+3. Il general chairman deve essere invitato alla conferenza che gestisce
 
-4. The chairman of a committee shall be one of its members
+4. Il chairman di un comitato deve esserne un membro
 
-5. All members of a committee shall be invited to the conference for which the committee was created
+5. Tutti i membri di un comitato assegnato ad una conferenza devono essere invitati alla stessa
 
-6. This cycle doesn't require any additional constraints
+6. Questo ciclo non evidenzia nessun vincolo aggiuntivo
 
-7. Articles must be approved by a revision committee for the conference the committee handles
+7. Un articolo deve essere approvato per una conferenza dal comitato dei revisori ad essa assegnato
 
-8. The program committee shall nominate a revision committee for the conference it handles
+8. Il comitato di prgoramma deve nominare il comitato dei revisori per la stessa conferenza a cui è assegnato
 
-# Logical design
+# Progettazione logica
 
 Lo scopo della progettazione logica è quello di giungere ad un modello relazionale. Prima di poterlo costruire, però, è fondamentale analizzare le ridondanze presenti nello schema E-R e determinare quali di esse vadano mantenute e quali scartate.
 
